@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cron = require("node-cron");
 const PORT = process.env.PORT || 5001;
 
 // body parser
@@ -12,8 +13,13 @@ app.get("/", (req, res) => {
 
 app.get("/api/test", (req, res) => {
   console.log("Api Hit");
-  setTimeout(() => {
+  const task = cron.schedule("* * * * * *", () => {
     console.log("running " + new Date());
+  });
+  task.start();
+  setTimeout(() => {
+    console.log("stop");
+    task.stop();
   }, 3000);
   res.json({ message: "success" });
 });
